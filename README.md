@@ -9,6 +9,9 @@ Maven 3.2 +
 Les modules :
 Projet :   UseSpringBoot
 submodules :  entity、dao、service、web
+use JPA Hibernate
 
-//multi-module project is built from an aggregator POM that manages a group of submodules.
-//aggregator is located in the project’s root directory and must have packaging of type pom
+
+
+https://howtodoinjava.com/spring-boot2/springbootapplication-auto-configuration/
+
