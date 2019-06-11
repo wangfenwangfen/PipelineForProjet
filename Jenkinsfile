@@ -46,8 +46,7 @@ pipeline {
 					rtServer (
 					id: "Artifactory-1",
 					url:"localhost:8081",
-					credentialsId: "nexuspass",
-					timeout = 300
+					credentialsId: "nexuspass"
 					)
 				}				
 				
