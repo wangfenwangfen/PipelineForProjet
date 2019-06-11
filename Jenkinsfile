@@ -39,6 +39,8 @@ pipeline {
 			}
 		}
 		
+	node {
+		
 		stage ('configurer artifact') {
             steps {
 			script {
@@ -65,5 +67,6 @@ pipeline {
 		
 		}
 			
+	}
 	}
 }
