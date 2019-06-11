@@ -49,7 +49,7 @@ pipeline {
 		stage ('push to nexus'){
 			def uploadSpec = """{
 			"files": [{
-                "pattern": "C:\Program Files (x86)\Jenkins\workspace\SpringbootProjet\controller\target\controller-1.0-SNAPSHOT.jar",
+                "pattern": "C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/controller-1.0-SNAPSHOT.jar",
                 "target": NEXUS_REPOSITORY
 					}
 				]
