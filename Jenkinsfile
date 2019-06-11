@@ -45,8 +45,8 @@ pipeline {
 				script {
 					rtServer (
 					id: "Artifactory-1",
-					url:NEXUS_URL,
-					credentialsId: NEXUS_CREDENTIAL_ID
+					url:"localhost:8081",
+					credentialsId: "nexuspass",
 					timeout = 300
 					)
 				}				
