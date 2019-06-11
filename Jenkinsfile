@@ -22,6 +22,7 @@ pipeline {
         // Jenkins credential id to authenticate to Nexus OSS (credential id creer dans jenkins avec son login mdp nexus)
         NEXUS_CREDENTIAL_ID = "nexuspass"
     }
+
 	//les etatpes stages en ordre
     stages {
 		stage('RecupererCodeSource') {
@@ -31,49 +32,32 @@ pipeline {
 			}
 		}
 		
+		stage('mvnbuild') {
+			steps {
+				//here use windows bat,if use unix shell, use script step
+				bat 'mvn clean install'
+			}
+		}
+		
 		stage ('Artifactory configuration') {
             steps {
-                rtServer (
-                    id: "ARTIFACTORY_SERVER",
-                    url: NEXUS_URL,
-                    credentialsId: NEXUS_CREDENTIAL_ID
-                )
+				def ARTIFACTORY_SERVER = Artifactory.newServer url:  NEXUS_URL, credentialsId: NEXUS_CREDENTIAL_ID, timeout = 300	
 
-                rtMavenDeployer (
-                    id: "MAVEN_DEPLOYER",
-                    serverId: "ARTIFACTORY_SERVER",
-                    releaseRepo: NEXUS_REPOSITORY,
-                    snapshotRepo: NEXUS_REPOSITORY
-                )
-
-                rtMavenResolver (
-                    id: "MAVEN_RESOLVER",
-                    serverId: "ARTIFACTORY_SERVER",
-                    releaseRepo: NEXUS_REPOSITORY,
-                    snapshotRepo: NEXUS_REPOSITORY
-                )
             }
         }
+	
+		stage ('push to nexus'){
+			def uploadSpec = """{
+			"files": [{
+                "pattern": "C:\Program Files (x86)\Jenkins\workspace\SpringbootProjet\controller\target\controller-1.0-SNAPSHOT.jar",
+                "target": NEXUS_REPOSITORY
+					}
+				]
+			}"""
 
-        stage ('Exec Maven') {
-            steps {
-                rtMavenRun (
-                    tool: "maven3.6.1",
-                    pom: 'pom.xml',
-                    goals: 'clean install',
-                    deployerId: "MAVEN_DEPLOYER",
-                    resolverId: "MAVEN_RESOLVER"
-                )
-            }
-        }
-
+			server.upload(uploadSpec)
+		}
+		
 			
-		stage ('Publish to Nexus') {
-            steps {
-                rtPublishBuildInfo (
-                    serverId: "ARTIFACTORY_SERVER"
-                )
-            }
-        }
 	}
 }
