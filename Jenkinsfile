@@ -39,13 +39,17 @@ pipeline {
 			}
 		}
 		
-	node {
 		
 		stage ('configurer artifact') {
             steps {
-			script {
-				def ARTIFACTORY_SERVER = Artifactory.newServer url:  NEXUS_URL, credentialsId: NEXUS_CREDENTIAL_ID, timeout = 300
-			}				
+				script {
+					rtServer (
+					id: "Artifactory-1",
+					url:NEXUS_URL,
+					credentialsId: NEXUS_CREDENTIAL_ID
+					timeout = 300
+					)
+				}				
 				
             }
         }
@@ -53,20 +57,20 @@ pipeline {
 		stage ('push to nexus'){
 			steps {
 				script{
-					def uploadSpec = """{
-						"files": [{
-						"pattern": "C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/controller-1.0-SNAPSHOT.jar",
-						"target": NEXUS_REPOSITORY
-							}
-						]
-					}"""
-
-					server.upload(uploadSpec)
+					rtUpload (
+						serverId: "Artifactory-1",
+						spec:
+							"""{
+								"files": [
+									{
+									"pattern": "C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/controller-1.0-SNAPSHOT.jar",
+									"target": NEXUS_REPOSITORY
+									}
+								]
+							}"""
+					)
 				}
 			}
 		
 		}
-			
 	}
-	}
-}
