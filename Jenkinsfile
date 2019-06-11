@@ -63,7 +63,7 @@ pipeline {
 								"files": [
 									{
 									"pattern": "C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/controller-1.0-SNAPSHOT.jar",
-									"target": NEXUS_REPOSITORY
+									"target": "pipelinforprojet"
 									}
 								]
 							}"""
