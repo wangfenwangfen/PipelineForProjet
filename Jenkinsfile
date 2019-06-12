@@ -1,27 +1,4 @@
-pipeline {
-	agent any
-	
-	tools {
-        // Note: this should match with the tool name configured in your jenkins instance, ici nomme "maven3.6.1" (JENKINS_URL/configureTools/)
-        maven "maven3.6.1"
-    }
-	
-stages {
-		stage('RecupererCodeSource') {
-			steps {
-				//clone the source from git
-				git(url: 'https://github.com/wangfenwangfen/PipelineForProjet.git', branch: 'master')
-			}
-		}
-		
-		stage('mvnbuild') {
-			steps {
-				//here use windows bat,if use unix shell, use script step
-				bat 'mvn clean install'
-			}
-		}
-		
-	node("maven"){
+node("master"){
 		stage("push to nexus")
 		bat 'cd C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/'
 		bat 'dir'
@@ -38,5 +15,3 @@ stages {
 			]
 		)
 	}
-}	
-}
