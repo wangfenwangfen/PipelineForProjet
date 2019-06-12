@@ -1,4 +1,5 @@
 pipeline {
+	//any agent for all stages, use label can speficier agent
 	agent any
 	
 	tools {
