@@ -22,6 +22,7 @@ pipeline {
 		}
 		
 		stage("push to nexus"){
+		steps{
 			bat 'cd C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/'
 			bat 'dir'
 			nexusArtifactUploader(
@@ -36,6 +37,9 @@ pipeline {
 					[artifactId: 'controller', classifier: '', file: 'C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/controller-1.0-SNAPSHOT.jar', type: 'jar']
 				]
 			)
+		
+		}
+			
 		}
 	}	
 }
