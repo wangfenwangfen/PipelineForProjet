@@ -24,7 +24,7 @@ stages {
 	node("maven"){
 		stage("push to nexus")
 		bat 'cd C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/'
-		bat dir'
+		bat 'dir'
 		nexusArtifactUploader(
 			credentialsId: 'nexuspass', 
 			groupId: 'com.tahoecn', 
