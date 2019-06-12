@@ -1,30 +1,12 @@
 pipeline {
-	//agent any  (peu import quel agent noeud)
+	agent any
 	
-	//ou bien spécifier un agent par son label 
-    agent {
-		
-		label "master"
-    }
-    tools {
+	tools {
         // Note: this should match with the tool name configured in your jenkins instance, ici nomme "maven3.6.1" (JENKINS_URL/configureTools/)
         maven "maven3.6.1"
     }
-    environment {
-        // This can be nexus3 or nexus2
-        NEXUS_VERSION = "nexus3"
-        // This can be http or https
-        NEXUS_PROTOCOL = "http"
-        // Where your Nexus is running (172.17.0.3:8081 ou bien fr.xxxxx:8081)
-        NEXUS_URL = "localhost:8081"
-        // Repository where we will upload the artifact ici exemple name repo est pipelinforprojet
-        NEXUS_REPOSITORY = "pipelinforprojet"
-        // Jenkins credential id to authenticate to Nexus OSS (credential id creer dans jenkins avec son login mdp nexus)
-        NEXUS_CREDENTIAL_ID = "nexuspass"
-    }
-
-	//les etatpes stages en ordre
-    stages {
+	
+stages {
 		stage('RecupererCodeSource') {
 			steps {
 				//clone the source from git
@@ -39,38 +21,22 @@ pipeline {
 			}
 		}
 		
-		
-		stage ('configurer artifact') {
-            steps {
-				script {
-					rtServer (
-					id: "Artifactory-1",
-					url:"localhost:8081",
-					credentialsId: "nexuspass"
-					)
-				}				
-				
-            }
-        }
-		
-		stage ('push to nexus'){
-			steps {
-				script{
-					rtUpload (
-						serverId: "Artifactory-1",
-						spec:
-							"""{
-								"files": [
-									{
-									"pattern": "C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/controller-1.0-SNAPSHOT.jar",
-									"target": "pipelinforprojet"
-									}
-								]
-							}"""
-					)
-				}
-			}
-		
-		}
+	node("maven"){
+		stage("push to nexus")
+		bat 'cd C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/'
+		bat dir'
+		nexusArtifactUploader(
+			credentialsId: 'nexuspass', 
+			groupId: 'com.tahoecn', 
+			nexusUrl: 'localhost:8081', 
+			nexusVersion: 'nexus3', 
+			protocol: 'http', 
+			repository: 'pipelinforprojet', 
+			version: '1.0',
+			artifacts: [
+				[artifactId: 'controller', classifier: '', file: 'C:/Program Files (x86)/Jenkins/workspace/SpringbootProjet/controller/target/controller-1.0-SNAPSHOT.jar', type: 'jar']
+			]
+		)
 	}
+}	
 }
